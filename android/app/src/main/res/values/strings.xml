@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">FocusTree</string>
+    <string name="title_activity_main">FocusTree</string>
+    <string name="package_name">com.belabbasanis.focustree</string>
+    <string name="custom_url_scheme">com.belabbasanis.focustree</string>
+</resources>
