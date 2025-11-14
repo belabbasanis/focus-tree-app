@@ -1,21 +1,32 @@
 import { useState, useEffect, useRef } from 'react';
-import { Play, Pause, RotateCcw } from 'lucide-react';
+import { Play, Pause, RotateCcw, Square, Home, Settings } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 const PRESETS = [15, 25, 45]; // minutes
 
-const PomodoroTimer = () => {
-  const [timeRemaining, setTimeRemaining] = useState<number>(25 * 60); // 25 minutes in seconds
+const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
+  const [timeRemaining, setTimeRemaining] = useState<number>(25 * 60);
   const [isRunning, setIsRunning] = useState<boolean>(false);
-  const [selectedDuration, setSelectedDuration] = useState<number>(25); // default 25 minutes
+  const [selectedDuration, setSelectedDuration] = useState<number>(25);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  // Format seconds to MM:SS
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
+
+  // Handle video playback
+  useEffect(() => {
+    if (videoRef.current) {
+      if (isRunning) {
+        videoRef.current.play().catch(console.error);
+      } else {
+        videoRef.current.pause();
+      }
+    }
+  }, [isRunning]);
 
   // Handle countdown
   useEffect(() => {
@@ -43,8 +54,17 @@ const PomodoroTimer = () => {
     };
   }, [isRunning, timeRemaining]);
 
-  const handleStartPause = () => {
-    setIsRunning((prev) => !prev);
+  const handleStart = () => {
+    setIsRunning(true);
+  };
+
+  const handlePause = () => {
+    setIsRunning(false);
+  };
+
+  const handleStop = () => {
+    setIsRunning(false);
+    setTimeRemaining(selectedDuration * 60);
   };
 
   const handleReset = () => {
@@ -60,64 +80,125 @@ const PomodoroTimer = () => {
   };
 
   return (
-    <div className="h-screen w-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-center fixed inset-0">
-      <div className="flex flex-col items-center justify-center space-y-8 px-4">
-        {/* Timer Display */}
-        <div className="flex flex-col items-center space-y-2">
-          <div className="text-indigo-900 text-7xl md:text-8xl font-mono font-bold tracking-wider drop-shadow-lg">
+    <div className="h-screen w-screen flex flex-col fixed inset-0 relative overflow-hidden">
+      {/* Background Image (default/idle state) */}
+      {!isRunning && (
+        <div 
+          className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: 'url(/images/bg-calm-sea.png)',
+          }}
+        />
+      )}
+
+      {/* Background Video (active/running state) */}
+      {isRunning && (
+        <video
+          ref={videoRef}
+          className="absolute inset-0 w-full h-full object-cover"
+          loop
+          muted
+          playsInline
+          autoPlay
+        >
+          <source src="/videos/loop-calm-sea.mp4" type="video/mp4" />
+        </video>
+      )}
+
+      {/* Overlay for better text readability */}
+      <div className="absolute inset-0 bg-black/20" />
+
+      {/* Content */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-4">
+        <div className="flex flex-col items-center space-y-4">
+          {/* Timer - using Neue Pixel font */}
+          <div className="text-white text-8xl md:text-9xl font-pixel font-bold tracking-wider drop-shadow-2xl" style={{
+            textShadow: '0 0 10px rgba(255,255,255,0.5), 0 0 20px rgba(255,255,255,0.3)',
+            letterSpacing: '0.1em'
+          }}>
             {formatTime(timeRemaining)}
           </div>
-          <div className="text-indigo-700 text-lg md:text-xl font-medium">
+          
+          {/* Focus Session Label - using PX Grotesk Pan */}
+          <div className="text-white/90 text-xl md:text-2xl font-grotesk font-medium">
             Focus Session
           </div>
+
+          {/* Preset Buttons - using PX Grotesk Pan */}
+          <div className="flex gap-4 mt-6">
+            {PRESETS.map((preset) => (
+              <button
+                key={preset}
+                onClick={() => handlePresetSelect(preset)}
+                disabled={isRunning}
+                className={cn(
+                  'w-20 h-20 rounded-full font-grotesk font-medium text-base transition-all duration-200 flex items-center justify-center',
+                  selectedDuration === preset
+                    ? 'bg-blue-500/80 text-white border-2 border-white shadow-lg scale-105'
+                    : 'bg-white/20 text-white hover:bg-white/30 shadow-md',
+                  isRunning && 'opacity-50 cursor-not-allowed hover:scale-100'
+                )}
+              >
+                {preset} min
+              </button>
+            ))}
+          </div>
         </div>
+      </div>
 
-        {/* Control Buttons */}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={handleStartPause}
-            className="bg-white/90 hover:bg-white text-indigo-600 rounded-full p-4 md:p-5 shadow-lg transition-all duration-200 hover:scale-105 active:scale-95"
-            aria-label={isRunning ? 'Pause' : 'Start'}
-          >
-            {isRunning ? (
-              <Pause className="w-8 h-8 md:w-10 md:h-10" fill="currentColor" />
-            ) : (
-              <Play className="w-8 h-8 md:w-10 md:h-10" fill="currentColor" />
-            )}
-          </button>
-
-          <button
-            onClick={handleReset}
-            className="bg-white/90 hover:bg-white text-indigo-600 rounded-full p-4 md:p-5 shadow-lg transition-all duration-200 hover:scale-105 active:scale-95"
-            aria-label="Reset"
-          >
-            <RotateCcw className="w-8 h-8 md:w-10 md:h-10" />
-          </button>
-        </div>
-
-        {/* Preset Buttons */}
-        <div className="flex gap-3 mt-4">
-          {PRESETS.map((preset) => (
+      {/* Bottom Navigation Bar */}
+      <div className="relative z-10 fixed bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-6">
+        {isRunning ? (
+          <>
             <button
-              key={preset}
-              onClick={() => handlePresetSelect(preset)}
-              disabled={isRunning}
-              className={cn(
-                'px-6 py-3 rounded-full font-medium text-sm md:text-base transition-all duration-200',
-                selectedDuration === preset
-                  ? 'bg-indigo-600 text-white shadow-lg scale-105'
-                  : 'bg-white/80 text-indigo-600 hover:bg-white shadow-md hover:scale-105',
-                isRunning && 'opacity-50 cursor-not-allowed hover:scale-100'
-              )}
+              onClick={handleReset}
+              className="w-14 h-14 rounded-full bg-white/90 hover:bg-white shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center"
+              aria-label="Reset"
             >
-              {preset} min
+              <RotateCcw className="w-6 h-6 text-gray-800" />
             </button>
-          ))}
-        </div>
+            <button
+              onClick={handlePause}
+              className="w-14 h-14 rounded-full bg-white/90 hover:bg-white shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center"
+              aria-label="Pause"
+            >
+              <Pause className="w-6 h-6 text-gray-800" fill="currentColor" />
+            </button>
+            <button
+              onClick={handleStop}
+              className="w-14 h-14 rounded-full bg-white/90 hover:bg-white shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center"
+              aria-label="Stop"
+            >
+              <Square className="w-5 h-5 text-gray-800" fill="currentColor" />
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              onClick={onNavigateHome}
+              className="w-14 h-14 rounded-full bg-white/20 hover:bg-white/30 border-2 border-white/50 shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center"
+              aria-label="Home"
+            >
+              <Home className="w-6 h-6 text-white" />
+            </button>
+            <button
+              onClick={handleStart}
+              className="w-16 h-16 rounded-full bg-black hover:bg-gray-900 shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center"
+              aria-label="Start"
+            >
+              <Play className="w-8 h-8 text-white ml-1" fill="currentColor" />
+            </button>
+            <button
+              className="w-14 h-14 rounded-full bg-white/20 hover:bg-white/30 border-2 border-white/50 shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center"
+              aria-label="Settings"
+            >
+              <Settings className="w-6 h-6 text-white" />
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
 };
 
 export default PomodoroTimer;
-
