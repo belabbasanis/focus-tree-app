@@ -12,6 +12,7 @@ function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [selectedSpriteId, setSelectedSpriteId] = useState<string | null>(null);
   const [placedSprites, setPlacedSprites] = useState<PlacedSprite[]>([]);
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
 
   const handleSelectSprite = (spriteId: string) => {
     setSelectedSpriteId(spriteId);
@@ -75,30 +76,35 @@ function App() {
             sprites={SPRITES}
             selectedSpriteId={selectedSpriteId}
             onSelectSprite={handleSelectSprite}
+            isOpen={isDrawerOpen}
+            onClose={() => setIsDrawerOpen(false)}
           />
 
-          {/* Bottom Navigation Bar for Grid View */}
-          <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-6 z-50">
-            <button
-              onClick={() => setViewMode('timer')}
-              className="w-14 h-14 rounded-full bg-white/90 hover:bg-white shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center"
-              aria-label="Timer"
-            >
-              <TreePine className="w-6 h-6 text-indigo-600" />
-            </button>
-            <button
-              className="w-14 h-14 rounded-full bg-white/90 hover:bg-white shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center"
-              aria-label="Add"
-            >
-              <Plus className="w-6 h-6 text-indigo-600" />
-            </button>
-            <button
-              className="w-14 h-14 rounded-full bg-white/90 hover:bg-white shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center"
-              aria-label="Settings"
-            >
-              <Settings className="w-6 h-6 text-indigo-600" />
-            </button>
-          </div>
+          {/* Bottom Navigation Bar for Grid View - Hide when drawer is open */}
+          {!isDrawerOpen && (
+            <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-6 z-40">
+              <button
+                onClick={() => setViewMode('timer')}
+                className="w-14 h-14 rounded-full bg-white/90 hover:bg-white shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center"
+                aria-label="Timer"
+              >
+                <TreePine className="w-6 h-6 text-indigo-600" />
+              </button>
+              <button
+                onClick={() => setIsDrawerOpen(true)}
+                className="w-14 h-14 rounded-full bg-white/90 hover:bg-white shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center"
+                aria-label="Add"
+              >
+                <Plus className="w-6 h-6 text-indigo-600" />
+              </button>
+              <button
+                className="w-14 h-14 rounded-full bg-white/90 hover:bg-white shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center"
+                aria-label="Settings"
+              >
+                <Settings className="w-6 h-6 text-indigo-600" />
+              </button>
+            </div>
+          )}
         </>
       )}
     </div>

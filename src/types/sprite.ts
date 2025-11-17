@@ -2,6 +2,7 @@ export interface Sprite {
   id: string;
   name: string;
   imageUrl: string;
+  layer: 'base' | 'secondary';
   sheetId?: string;
   gridRow?: number;
   gridCol?: number;

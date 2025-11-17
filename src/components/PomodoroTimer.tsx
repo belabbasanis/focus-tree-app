@@ -9,24 +9,12 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [selectedDuration, setSelectedDuration] = useState<number>(25);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
-
-  // Handle video playback
-  useEffect(() => {
-    if (videoRef.current) {
-      if (isRunning) {
-        videoRef.current.play().catch(console.error);
-      } else {
-        videoRef.current.pause();
-      }
-    }
-  }, [isRunning]);
 
   // Handle countdown
   useEffect(() => {
@@ -81,35 +69,19 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
 
   return (
     <div className="h-screen w-screen flex flex-col fixed inset-0 relative overflow-hidden">
-      {/* Background Image (default/idle state) */}
-      {!isRunning && (
-        <div 
-          className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: 'url(/images/bg-calm-sea.png)',
-          }}
-        />
-      )}
-
-      {/* Background Video (active/running state) */}
-      {isRunning && (
-        <video
-          ref={videoRef}
-          className="absolute inset-0 w-full h-full object-cover"
-          loop
-          muted
-          playsInline
-          autoPlay
-        >
-          <source src="/videos/loop-calm-sea.mp4" type="video/mp4" />
-        </video>
-      )}
+      {/* Static Background Image */}
+      <div 
+        className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: 'url(/images/bg-calm-sea.png)',
+        }}
+      />
 
       {/* Overlay for better text readability */}
       <div className="absolute inset-0 bg-black/20" />
 
       {/* Content */}
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-4">
+      <div className="relative z-10 flex-1 flex flex-col items-center px-4" style={{ paddingTop: '140px' }}>
         <div className="flex flex-col items-center space-y-4">
           {/* Timer - using Neue Pixel font */}
           <div className="text-white text-8xl md:text-9xl font-pixel font-bold tracking-wider drop-shadow-2xl" style={{
@@ -124,30 +96,30 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
             Focus Session
           </div>
 
-          {/* Preset Buttons - using PX Grotesk Pan */}
-          <div className="flex gap-4 mt-6">
-            {PRESETS.map((preset) => (
-              <button
-                key={preset}
-                onClick={() => handlePresetSelect(preset)}
-                disabled={isRunning}
-                className={cn(
-                  'w-20 h-20 rounded-full font-grotesk font-medium text-base transition-all duration-200 flex items-center justify-center',
-                  selectedDuration === preset
-                    ? 'bg-blue-500/80 text-white border-2 border-white shadow-lg scale-105'
-                    : 'bg-white/20 text-white hover:bg-white/30 shadow-md',
-                  isRunning && 'opacity-50 cursor-not-allowed hover:scale-100'
-                )}
-              >
-                {preset} min
-              </button>
-            ))}
-          </div>
+          {/* Preset Buttons - Chip style toggle buttons - Hidden when running */}
+          {!isRunning && (
+            <div className="flex gap-3 mt-6">
+              {PRESETS.map((preset) => (
+                <button
+                  key={preset}
+                  onClick={() => handlePresetSelect(preset)}
+                  className={cn(
+                    'px-4 py-2 rounded-full font-grotesk font-medium text-sm transition-all duration-200',
+                    selectedDuration === preset
+                      ? 'bg-white text-indigo-600 shadow-md'
+                      : 'bg-white/20 text-white hover:bg-white/30'
+                  )}
+                >
+                  {preset} min
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Bottom Navigation Bar */}
-      <div className="relative z-10 fixed bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-6">
+      {/* Bottom Navigation Bar - Centered horizontally */}
+      <div className="relative z-10 fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center justify-center gap-6">
         {isRunning ? (
           <>
             <button
