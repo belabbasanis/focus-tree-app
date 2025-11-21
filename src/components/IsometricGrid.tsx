@@ -112,6 +112,10 @@ const IsometricGrid = ({
   // The wrapper needs to be wide enough to allow scrolling in both directions
   const scrollWrapperWidth = Math.max(2000, gridWidth + 1000);
   
+  // Add horizontal padding to create scrollable space on both sides for mobile
+  // Large padding ensures grid can scroll left and right from centered position
+  const horizontalPadding = 1000;
+  
   // Position the grid container so its center aligns with the scroll wrapper center
   // Since tiles are offset so leftmost is at 0, the grid center in container coordinates is at gridWidth/2
   // To center it in the scroll wrapper: container left = scrollWrapperWidth/2 - gridWidth/2
@@ -121,16 +125,30 @@ const IsometricGrid = ({
   useEffect(() => {
     if (scrollContainerRef.current) {
       const container = scrollContainerRef.current;
-      // Wait for layout to complete - use multiple RAF calls for mobile
+      // Wait for layout to complete - use multiple RAF calls + delay for mobile
       // Mobile browsers may need more time to calculate layout
+      const scrollToCenter = () => {
+        const scrollWidth = container.scrollWidth;
+        const clientWidth = container.clientWidth;
+        const scrollHeight = container.scrollHeight;
+        const clientHeight = container.clientHeight;
+        
+        // Center the grid horizontally
+        if (scrollWidth > clientWidth) {
+          container.scrollLeft = (scrollWidth - clientWidth) / 2;
+        }
+        // Center the grid vertically
+        if (scrollHeight > clientHeight) {
+          container.scrollTop = (scrollHeight - clientHeight) / 2;
+        }
+      };
+      
+      // Multiple RAF calls + setTimeout delay for mobile layout completion
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          const scrollWidth = container.scrollWidth;
-          const clientWidth = container.clientWidth;
-          // Center the grid horizontally
-          if (scrollWidth > clientWidth) {
-            container.scrollLeft = (scrollWidth - clientWidth) / 2;
-          }
+          setTimeout(() => {
+            scrollToCenter();
+          }, 150); // Delay for mobile browsers to complete layout
         });
       });
     }
@@ -139,27 +157,22 @@ const IsometricGrid = ({
   return (
     <div
       ref={scrollContainerRef}
-      className="relative w-full h-full overflow-auto scrollbar-hide"
+      className="relative w-full h-full"
       style={{
-        scrollbarWidth: 'none',
-        msOverflowStyle: 'none',
-        WebkitOverflowScrolling: 'touch', // Enable momentum scrolling on iOS
-        touchAction: 'pan-x pan-y', // Enable touch scrolling on mobile (critical for Android/iOS)
-        overscrollBehavior: 'contain', // Prevent scroll chaining
+        overflow: 'scroll', // Critical: use 'scroll' not 'auto' for Android WebView
       }}
     >
-      <style>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
       <div
         style={{
           paddingTop: '10vh',
           paddingBottom: '10vh',
+          paddingLeft: `${horizontalPadding}px`, // Add left padding for scrollable space
+          paddingRight: `${horizontalPadding}px`, // Add right padding for scrollable space
           width: `${scrollWrapperWidth}px`,
           minWidth: `${scrollWrapperWidth}px`, // Ensure minimum width for scrolling on mobile
+          height: `${containerHeight + 2000}px`, // Natural height that exceeds viewport - critical for Android WebView
           position: 'relative',
+          display: 'block', // Explicit block display - critical for Android WebView
         }}
       >
         <div
@@ -169,6 +182,7 @@ const IsometricGrid = ({
             height: `${containerHeight}px`,
             position: 'absolute',
             left: `${gridContainerLeft}px`,
+            top: '10vh', // Explicit top positioning
           }}
         >
           {/* Render tiles first */}

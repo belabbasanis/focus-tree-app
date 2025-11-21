@@ -1,8 +1,26 @@
 import { useState, useEffect, useRef } from 'react';
-import { Play, Pause, RotateCcw, Square, Home, Settings } from 'lucide-react';
+import { Play, Pause, RotateCcw, Square } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 const PRESETS = [15, 25, 45]; // minutes
+
+// CustomIcon helper component for pixelated icons
+const CustomIcon = ({ 
+  src, 
+  alt, 
+  className = "w-5 h-5" 
+}: { 
+  src: string; 
+  alt: string; 
+  className?: string;
+}) => (
+  <img 
+    src={src} 
+    alt={alt} 
+    className={className}
+    style={{ imageRendering: 'pixelated' }}
+  />
+);
 
 const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
   const [timeRemaining, setTimeRemaining] = useState<number>(25 * 60);
@@ -118,7 +136,7 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
           <>
             <button
               onClick={handleReset}
-              className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-white transition-none"
+              className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"
               style={{ imageRendering: 'pixelated' }}
               aria-label="Reset"
             >
@@ -126,7 +144,7 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
             </button>
             <button
               onClick={handlePause}
-              className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-white transition-none"
+              className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"
               style={{ imageRendering: 'pixelated' }}
               aria-label="Pause"
             >
@@ -134,7 +152,7 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
             </button>
             <button
               onClick={handleStop}
-              className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-white transition-none"
+              className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"
               style={{ imageRendering: 'pixelated' }}
               aria-label="Stop"
             >
@@ -145,26 +163,26 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
           <>
             <button
               onClick={onNavigateHome}
-              className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-white transition-none"
+              className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"
               style={{ imageRendering: 'pixelated' }}
               aria-label="Home"
             >
-              <Home className="w-5 h-5 text-white" style={{ filter: 'brightness(0) invert(1)' }} />
+              <CustomIcon src="/icons/Timechamber.png" alt="Home" className="w-5 h-5" />
             </button>
             <button
               onClick={handleStart}
-              className="bg-white border-2 border-white w-14 h-14 flex items-center justify-center hover:bg-black hover:text-white transition-none"
+              className="bg-white border-2 border-white w-14 h-14 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"
               style={{ imageRendering: 'pixelated' }}
               aria-label="Start"
             >
               <Play className="w-6 h-6 text-black ml-1" fill="currentColor" />
             </button>
             <button
-              className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-white transition-none"
+              className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"
               style={{ imageRendering: 'pixelated' }}
               aria-label="Settings"
             >
-              <Settings className="w-5 h-5 text-white" style={{ filter: 'brightness(0) invert(1)' }} />
+              <CustomIcon src="/icons/Settings.png" alt="Settings" className="w-5 h-5" />
             </button>
           </>
         )}

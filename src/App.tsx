@@ -4,9 +4,27 @@ import MobileSpriteSelector from './components/MobileSpriteSelector';
 import PomodoroTimer from './components/PomodoroTimer';
 import { PlacedSprite } from './types/sprite';
 import { SPRITES } from './config/sprites';
-import { Flame, Clock, Coins, TreePine, Plus, Settings } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 type ViewMode = 'grid' | 'timer';
+
+// CustomIcon helper component for pixelated icons
+const CustomIcon = ({ 
+  src, 
+  alt, 
+  className = "w-3 h-3" 
+}: { 
+  src: string; 
+  alt: string; 
+  className?: string;
+}) => (
+  <img 
+    src={src} 
+    alt={alt} 
+    className={className}
+    style={{ imageRendering: 'pixelated' }}
+  />
+);
 
 function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
@@ -49,15 +67,15 @@ function App() {
           {/* Top Stats Bar - Retro Style */}
           <div className="fixed top-2 left-1/2 transform -translate-x-1/2 flex items-center gap-2 z-50">
             <div className="bg-black border-2 border-white px-3 py-1 flex items-center gap-2" style={{ imageRendering: 'pixelated' }}>
-              <Flame className="w-3 h-3 text-white" style={{ filter: 'brightness(0) invert(1)' }} />
+              <CustomIcon src="/icons/Streak.png" alt="Streak" className="w-3 h-3" />
               <span className="text-xs font-retro">1</span>
             </div>
             <div className="bg-black border-2 border-white px-3 py-1 flex items-center gap-2" style={{ imageRendering: 'pixelated' }}>
-              <Clock className="w-3 h-3 text-white" style={{ filter: 'brightness(0) invert(1)' }} />
+              <CustomIcon src="/icons/Time.png" alt="Time" className="w-3 h-3" />
               <span className="text-xs font-retro">25M</span>
             </div>
             <div className="bg-black border-2 border-white px-3 py-1 flex items-center gap-2" style={{ imageRendering: 'pixelated' }}>
-              <Coins className="w-3 h-3 text-white" style={{ filter: 'brightness(0) invert(1)' }} />
+              <CustomIcon src="/icons/Coin.png" alt="Coin" className="w-3 h-3" />
               <span className="text-xs font-retro">0</span>
             </div>
           </div>
@@ -85,26 +103,26 @@ function App() {
             <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-4 z-40">
               <button
                 onClick={() => setViewMode('timer')}
-                className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-white hover:text-black transition-none"
+                className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"
                 style={{ imageRendering: 'pixelated' }}
                 aria-label="Timer"
               >
-                <TreePine className="w-5 h-5 text-white" style={{ filter: 'brightness(0) invert(1)' }} />
+                <CustomIcon src="/icons/Grid.png" alt="Grid" className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setIsDrawerOpen(true)}
-                className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-white hover:text-black transition-none"
+                className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"
                 style={{ imageRendering: 'pixelated' }}
                 aria-label="Add"
               >
                 <Plus className="w-5 h-5 text-white" style={{ filter: 'brightness(0) invert(1)' }} />
               </button>
               <button
-                className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-white hover:text-black transition-none"
+                className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"
                 style={{ imageRendering: 'pixelated' }}
                 aria-label="Settings"
               >
-                <Settings className="w-5 h-5 text-white" style={{ filter: 'brightness(0) invert(1)' }} />
+                <CustomIcon src="/icons/Settings.png" alt="Settings" className="w-5 h-5" />
               </button>
             </div>
           )}
