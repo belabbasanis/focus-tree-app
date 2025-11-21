@@ -1,5 +1,3 @@
-import { Sprite } from '../types/sprite';
-
 interface IsometricTileProps {
   x: number;
   y: number;
@@ -9,7 +7,6 @@ interface IsometricTileProps {
   height: number;
   isSelected: boolean;
   onClick: (row: number, col: number) => void;
-  sprite?: Sprite;
 }
 
 const IsometricTile = ({
@@ -21,78 +18,58 @@ const IsometricTile = ({
   height,
   isSelected,
   onClick,
-  sprite,
 }: IsometricTileProps) => {
   const handleClick = () => {
     onClick(row, col);
   };
 
+  // Calculate z-index based on position (tiles closer to viewer have higher z-index)
+  const zIndex = row + col;
+
   return (
     <div
       className="absolute cursor-pointer transition-all duration-200"
       style={{
-        left: '50%',
-        top: '20%',
-        transform: `translate(${x}px, ${y}px)`,
+        left: `${x}px`,
+        top: `${y}px`,
+        width: `${width}px`,
+        height: `${height}px`,
+        zIndex: zIndex,
+        transformOrigin: 'center center',
+        touchAction: 'manipulation', // Allow scrolling gestures while preserving tap
       }}
       onClick={handleClick}
     >
       <div
-        className={`relative transition-all duration-200 ${
-          isSelected ? 'scale-105' : 'hover:scale-102'
+        className={`relative transition-none ${
+          isSelected ? 'scale-105' : ''
         }`}
         style={{
-          width: `${width}px`,
-          height: `${height}px`,
+          width: '100%',
+          height: '100%',
         }}
       >
         <svg
           width={width}
           height={height}
           viewBox={`0 0 ${width} ${height}`}
-          className="drop-shadow-md"
+          style={{ display: 'block', imageRendering: 'pixelated' }}
         >
           <polygon
             points={`${width / 2},0 ${width},${height / 2} ${width / 2},${height} 0,${height / 2}`}
-            fill={isSelected ? '#3b82f6' : '#64748b'}
-            stroke="rgba(0, 0, 0, 0.2)"
-            strokeWidth="1.5"
-            className="transition-all duration-200"
-            opacity="0.3"
-          />
-          <polygon
-            points={`${width / 2},0 ${width},${height / 2} ${width / 2},${height / 2}`}
-            fill={isSelected ? '#2563eb' : '#475569'}
-            opacity="0"
-          />
-          <polygon
-            points={`0,${height / 2} ${width / 2},${height} ${width / 2},${height / 2}`}
-            fill={isSelected ? '#1e40af' : '#334155'}
-            opacity="0"
+            fill={isSelected ? '#ffffff' : '#000000'}
+            stroke="#ffffff"
+            strokeWidth="2"
+            className="transition-none"
+            opacity={isSelected ? '0.5' : '0.2'}
           />
         </svg>
         <div
-          className="absolute inset-0 flex items-center justify-center text-xs font-mono text-white opacity-50"
-          style={{ pointerEvents: 'none' }}
+          className="absolute inset-0 flex items-center justify-center text-xs font-retro text-white opacity-30"
+          style={{ pointerEvents: 'none', imageRendering: 'pixelated' }}
         >
           {row},{col}
         </div>
-        {sprite && (
-          <img
-            src={sprite.imageUrl}
-            alt={sprite.name}
-            className="absolute drop-shadow-lg"
-            style={{
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: `${width * 1.2}px`,
-              height: 'auto',
-              pointerEvents: 'none',
-              zIndex: 10,
-            }}
-          />
-        )}
       </div>
     </div>
   );

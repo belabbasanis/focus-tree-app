@@ -68,35 +68,28 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
   };
 
   return (
-    <div className="h-screen w-screen flex flex-col fixed inset-0 relative overflow-hidden">
-      {/* Static Background Image */}
-      <div 
-        className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: 'url(/images/bg-calm-sea.png)',
-        }}
-      />
-
-      {/* Overlay for better text readability */}
-      <div className="absolute inset-0 bg-black/20" />
+    <div className="h-screen w-screen flex flex-col fixed inset-0 relative overflow-hidden bg-black" style={{ imageRendering: 'pixelated' }}>
+      {/* Retro CRT Background - Simple black with scanlines */}
+      <div className="absolute inset-0 bg-black" />
 
       {/* Content */}
       <div className="relative z-10 flex-1 flex flex-col items-center px-4" style={{ paddingTop: '140px' }}>
         <div className="flex flex-col items-center space-y-4">
-          {/* Timer - using Neue Pixel font */}
-          <div className="text-white text-8xl md:text-9xl font-pixel font-bold tracking-wider drop-shadow-2xl" style={{
-            textShadow: '0 0 10px rgba(255,255,255,0.5), 0 0 20px rgba(255,255,255,0.3)',
-            letterSpacing: '0.1em'
+          {/* Timer - Retro pixel font */}
+          <div className="text-white text-8xl md:text-9xl font-retro" style={{
+            textShadow: '4px 4px 0px #000000',
+            letterSpacing: '0.1em',
+            imageRendering: 'pixelated',
           }}>
             {formatTime(timeRemaining)}
           </div>
           
-          {/* Focus Session Label - using PX Grotesk Pan */}
-          <div className="text-white/90 text-xl md:text-2xl font-grotesk font-medium">
-            Focus Session
+          {/* Focus Session Label */}
+          <div className="text-white text-lg md:text-xl font-retro uppercase">
+            FOCUS SESSION
           </div>
 
-          {/* Preset Buttons - Chip style toggle buttons - Hidden when running */}
+          {/* Preset Buttons - Retro style */}
           {!isRunning && (
             <div className="flex gap-3 mt-6">
               {PRESETS.map((preset) => (
@@ -104,13 +97,14 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
                   key={preset}
                   onClick={() => handlePresetSelect(preset)}
                   className={cn(
-                    'px-4 py-2 rounded-full font-grotesk font-medium text-sm transition-all duration-200',
+                    'px-4 py-2 border-2 border-white font-retro text-xs uppercase transition-none',
                     selectedDuration === preset
-                      ? 'bg-white text-indigo-600 shadow-md'
-                      : 'bg-white/20 text-white hover:bg-white/30'
+                      ? 'bg-white text-black'
+                      : 'bg-black text-white hover:bg-white hover:text-black'
                   )}
+                  style={{ imageRendering: 'pixelated' }}
                 >
-                  {preset} min
+                  {preset} MIN
                 </button>
               ))}
             </div>
@@ -118,53 +112,59 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
         </div>
       </div>
 
-      {/* Bottom Navigation Bar - Centered horizontally */}
+      {/* Bottom Navigation Bar - Retro Style */}
       <div className="relative z-10 fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center justify-center gap-6">
         {isRunning ? (
           <>
             <button
               onClick={handleReset}
-              className="w-14 h-14 rounded-full bg-white/90 hover:bg-white shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center"
+              className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-white transition-none"
+              style={{ imageRendering: 'pixelated' }}
               aria-label="Reset"
             >
-              <RotateCcw className="w-6 h-6 text-gray-800" />
+              <RotateCcw className="w-5 h-5 text-white" style={{ filter: 'brightness(0) invert(1)' }} />
             </button>
             <button
               onClick={handlePause}
-              className="w-14 h-14 rounded-full bg-white/90 hover:bg-white shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center"
+              className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-white transition-none"
+              style={{ imageRendering: 'pixelated' }}
               aria-label="Pause"
             >
-              <Pause className="w-6 h-6 text-gray-800" fill="currentColor" />
+              <Pause className="w-5 h-5 text-white" fill="currentColor" style={{ filter: 'brightness(0) invert(1)' }} />
             </button>
             <button
               onClick={handleStop}
-              className="w-14 h-14 rounded-full bg-white/90 hover:bg-white shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center"
+              className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-white transition-none"
+              style={{ imageRendering: 'pixelated' }}
               aria-label="Stop"
             >
-              <Square className="w-5 h-5 text-gray-800" fill="currentColor" />
+              <Square className="w-4 h-4 text-white" fill="currentColor" style={{ filter: 'brightness(0) invert(1)' }} />
             </button>
           </>
         ) : (
           <>
             <button
               onClick={onNavigateHome}
-              className="w-14 h-14 rounded-full bg-white/20 hover:bg-white/30 border-2 border-white/50 shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center"
+              className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-white transition-none"
+              style={{ imageRendering: 'pixelated' }}
               aria-label="Home"
             >
-              <Home className="w-6 h-6 text-white" />
+              <Home className="w-5 h-5 text-white" style={{ filter: 'brightness(0) invert(1)' }} />
             </button>
             <button
               onClick={handleStart}
-              className="w-16 h-16 rounded-full bg-black hover:bg-gray-900 shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center"
+              className="bg-white border-2 border-white w-14 h-14 flex items-center justify-center hover:bg-black hover:text-white transition-none"
+              style={{ imageRendering: 'pixelated' }}
               aria-label="Start"
             >
-              <Play className="w-8 h-8 text-white ml-1" fill="currentColor" />
+              <Play className="w-6 h-6 text-black ml-1" fill="currentColor" />
             </button>
             <button
-              className="w-14 h-14 rounded-full bg-white/20 hover:bg-white/30 border-2 border-white/50 shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center"
+              className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-white transition-none"
+              style={{ imageRendering: 'pixelated' }}
               aria-label="Settings"
             >
-              <Settings className="w-6 h-6 text-white" />
+              <Settings className="w-5 h-5 text-white" style={{ filter: 'brightness(0) invert(1)' }} />
             </button>
           </>
         )}
