@@ -131,7 +131,7 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
       </div>
 
       {/* Bottom Navigation Bar - Retro Style */}
-      <div className="relative z-10 fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center justify-center gap-6">
+      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 flex items-center gap-4 z-40">
         {isRunning ? (
           <>
             <button
@@ -156,7 +156,7 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
               style={{ imageRendering: 'pixelated' }}
               aria-label="Stop"
             >
-              <Square className="w-4 h-4 text-white" fill="currentColor" style={{ filter: 'brightness(0) invert(1)' }} />
+              <Square className="w-5 h-5 text-white" fill="currentColor" style={{ filter: 'brightness(0) invert(1)' }} />
             </button>
           </>
         ) : (
@@ -165,17 +165,17 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
               onClick={onNavigateHome}
               className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"
               style={{ imageRendering: 'pixelated' }}
-              aria-label="Home"
+              aria-label="Garden"
             >
-              <CustomIcon src="/icons/Timechamber.png" alt="Home" className="w-5 h-5" />
+              <CustomIcon src="/icons/Palm.png" alt="Garden" className="w-5 h-5" />
             </button>
             <button
               onClick={handleStart}
-              className="bg-white border-2 border-white w-14 h-14 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"
+              className="bg-white border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"
               style={{ imageRendering: 'pixelated' }}
               aria-label="Start"
             >
-              <Play className="w-6 h-6 text-black ml-1" fill="currentColor" />
+              <Play className="w-5 h-5 text-black" fill="currentColor" />
             </button>
             <button
               className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"

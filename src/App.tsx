@@ -65,18 +65,18 @@ function App() {
       ) : (
         <>
           {/* Top Stats Bar - Retro Style */}
-          <div className="fixed top-2 left-1/2 transform -translate-x-1/2 flex items-center gap-2 z-50">
+          <div className="fixed top-6 left-1/2 transform -translate-x-1/2 flex items-center gap-2 z-50">
             <div className="bg-black border-2 border-white px-3 py-1 flex items-center gap-2" style={{ imageRendering: 'pixelated' }}>
-              <CustomIcon src="/icons/Streak.png" alt="Streak" className="w-3 h-3" />
-              <span className="text-xs font-retro">1</span>
+              <CustomIcon src="/icons/Streak.png" alt="Streak" className="w-6 h-6" />
+              <span className="text-sm font-retro">1</span>
             </div>
             <div className="bg-black border-2 border-white px-3 py-1 flex items-center gap-2" style={{ imageRendering: 'pixelated' }}>
-              <CustomIcon src="/icons/Time.png" alt="Time" className="w-3 h-3" />
-              <span className="text-xs font-retro">25M</span>
+              <CustomIcon src="/icons/Time.png" alt="Time" className="w-6 h-6" />
+              <span className="text-sm font-retro">25</span>
             </div>
             <div className="bg-black border-2 border-white px-3 py-1 flex items-center gap-2" style={{ imageRendering: 'pixelated' }}>
-              <CustomIcon src="/icons/Coin.png" alt="Coin" className="w-3 h-3" />
-              <span className="text-xs font-retro">0</span>
+              <CustomIcon src="/icons/Coin.png" alt="Coin" className="w-6 h-6" />
+              <span className="text-sm font-retro">0</span>
             </div>
           </div>
 
@@ -100,14 +100,14 @@ function App() {
 
           {/* Bottom Navigation Bar - Retro Style */}
           {!isDrawerOpen && (
-            <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-4 z-40">
+            <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 flex items-center gap-4 z-40">
               <button
                 onClick={() => setViewMode('timer')}
                 className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"
                 style={{ imageRendering: 'pixelated' }}
                 aria-label="Timer"
               >
-                <CustomIcon src="/icons/Grid.png" alt="Grid" className="w-5 h-5" />
+                <CustomIcon src="/icons/Time.png" alt="Timer" className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setIsDrawerOpen(true)}
@@ -120,9 +120,9 @@ function App() {
               <button
                 className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"
                 style={{ imageRendering: 'pixelated' }}
-                aria-label="Settings"
+                aria-label="Timechamber"
               >
-                <CustomIcon src="/icons/Settings.png" alt="Settings" className="w-5 h-5" />
+                <CustomIcon src="/icons/Timechamber.png" alt="Timechamber" className="w-5 h-5" />
               </button>
             </div>
           )}
