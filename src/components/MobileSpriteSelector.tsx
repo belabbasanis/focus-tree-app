@@ -5,32 +5,37 @@ import { cn } from '../lib/utils';
 interface MobileSpriteSelectorProps {
   sprites: Sprite[];
   selectedSpriteId: string | null;
-  onSelectSprite: (spriteId: string) => void;
+  onSelectSprite: (spriteId: string | null) => void;
   isOpen: boolean;
   onClose: () => void;
+  canPlace: boolean;
 }
 
 // Preview card component with consistent sizing aligned with grid constraints
 const SpritePreviewCard = ({ 
   sprite, 
   isSelected, 
+  isLocked,
   onClick 
 }: { 
   sprite: Sprite; 
-  isSelected: boolean; 
+  isSelected: boolean;
+  isLocked: boolean;
   onClick: () => void;
 }) => {
   return (
     <button
       onClick={onClick}
+      disabled={isLocked}
       className={cn(
-        "relative aspect-square border-2 transition-none overflow-hidden",
+        "relative aspect-square border-2 transition-none overflow-hidden group",
         isSelected
           ? 'bg-white border-white'
-          : 'bg-black border-white hover:bg-white'
+          : 'bg-black border-white hover:bg-white',
+        isLocked && 'opacity-50 cursor-not-allowed'
       )}
       style={{ imageRendering: 'pixelated' }}
-      title={sprite.name}
+      title={isLocked ? 'Placement limit reached' : sprite.name}
     >
       {/* Preview Frame */}
       <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
@@ -52,6 +57,18 @@ const SpritePreviewCard = ({
       {isSelected && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50 pointer-events-none border-2 border-white">
           <div className="w-2 h-2 bg-white" style={{ imageRendering: 'pixelated' }} />
+        </div>
+      )}
+
+      {/* Lock overlay - always visible when locked (mobile-friendly) */}
+      {isLocked && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/70 pointer-events-none">
+          <img
+            src="public/icons/lock.png"
+            alt="Locked"
+            className="w-8 h-8"
+            style={{ imageRendering: 'pixelated' }}
+          />
         </div>
       )}
     </button>
@@ -83,6 +100,7 @@ const MobileSpriteSelector = ({
   onSelectSprite,
   isOpen,
   onClose,
+  canPlace,
 }: MobileSpriteSelectorProps) => {
   const selectedSprite = selectedSpriteId 
     ? sprites.find(s => s.id === selectedSpriteId)
@@ -125,9 +143,16 @@ const MobileSpriteSelector = ({
               key={sprite.id}
               sprite={sprite}
               isSelected={selectedSpriteId === sprite.id}
+              isLocked={!canPlace}
               onClick={() => {
-                onSelectSprite(sprite.id);
-                onClose();
+                if (canPlace) {
+                  // Toggle: if already selected, deselect; otherwise select
+                  const newSelection = selectedSpriteId === sprite.id ? null : sprite.id;
+                  onSelectSprite(newSelection);
+                  if (newSelection) {
+                    onClose(); // Only close if selecting (not deselecting)
+                  }
+                }
               }}
             />
           ))}

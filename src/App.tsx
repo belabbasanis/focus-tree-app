@@ -39,8 +39,13 @@ function App() {
     isLoading 
   } = useProgression();
 
-  const handleSelectSprite = (spriteId: string) => {
-    setSelectedSpriteId(spriteId);
+  const handleSelectSprite = (spriteId: string | null) => {
+    // If clicking the same sprite or passing null, deselect it
+    if (selectedSpriteId === spriteId) {
+      setSelectedSpriteId(null);
+    } else {
+      setSelectedSpriteId(spriteId);
+    }
   };
 
   const handlePlaceSprite = (row: number, col: number) => {
@@ -90,6 +95,7 @@ function App() {
             onSelectSprite={handleSelectSprite}
             isOpen={isDrawerOpen}
             onClose={() => setIsDrawerOpen(false)}
+            canPlace={canPlace}
           />
 
           {/* Bottom Navigation Bar - Retro Style */}

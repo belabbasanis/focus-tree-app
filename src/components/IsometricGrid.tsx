@@ -35,6 +35,12 @@ const IsometricGrid = ({
   };
 
   const handleTileClick = (row: number, col: number) => {
+    // If clicking the same tile that's already selected, deselect it
+    if (selectedTile?.row === row && selectedTile?.col === col) {
+      setSelectedTile(null);
+      return;
+    }
+    
     setSelectedTile({ row, col });
     if (selectedSprite) {
       onPlaceSprite(row, col);
