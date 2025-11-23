@@ -5,7 +5,7 @@ import { cn } from '../lib/utils';
 interface MobileSpriteSelectorProps {
   sprites: Sprite[];
   selectedSpriteId: string | null;
-  onSelectSprite: (spriteId: string | null) => void;
+  onSelectSprite: (spriteId: string) => void;
   isOpen: boolean;
   onClose: () => void;
   canPlace: boolean;
@@ -14,7 +14,7 @@ interface MobileSpriteSelectorProps {
 // Preview card component with consistent sizing aligned with grid constraints
 const SpritePreviewCard = ({ 
   sprite, 
-  isSelected, 
+  isSelected,
   isLocked,
   onClick 
 }: { 
@@ -28,7 +28,7 @@ const SpritePreviewCard = ({
       onClick={onClick}
       disabled={isLocked}
       className={cn(
-        "relative aspect-square border-2 transition-none overflow-hidden group",
+        "relative aspect-square border-2 transition-none overflow-hidden",
         isSelected
           ? 'bg-white border-white'
           : 'bg-black border-white hover:bg-white',
@@ -64,7 +64,7 @@ const SpritePreviewCard = ({
       {isLocked && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/70 pointer-events-none">
           <img
-            src="public/icons/lock.png"
+            src="/icons/lock.png"
             alt="Locked"
             className="w-8 h-8"
             style={{ imageRendering: 'pixelated' }}
@@ -146,12 +146,8 @@ const MobileSpriteSelector = ({
               isLocked={!canPlace}
               onClick={() => {
                 if (canPlace) {
-                  // Toggle: if already selected, deselect; otherwise select
-                  const newSelection = selectedSpriteId === sprite.id ? null : sprite.id;
-                  onSelectSprite(newSelection);
-                  if (newSelection) {
-                    onClose(); // Only close if selecting (not deselecting)
-                  }
+                  onSelectSprite(sprite.id);
+                  onClose();
                 }
               }}
             />
