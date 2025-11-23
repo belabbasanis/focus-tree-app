@@ -2,9 +2,9 @@ import { useState } from 'react';
 import IsometricGrid from './components/IsometricGrid';
 import MobileSpriteSelector from './components/MobileSpriteSelector';
 import PomodoroTimer from './components/PomodoroTimer';
-import { PlacedSprite } from './types/sprite';
 import { SPRITES } from './config/sprites';
 import { Plus } from 'lucide-react';
+import { useProgression } from './contexts/ProgressionContext';
 
 type ViewMode = 'grid' | 'timer';
 
@@ -29,8 +29,15 @@ const CustomIcon = ({
 function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [selectedSpriteId, setSelectedSpriteId] = useState<string | null>(null);
-  const [placedSprites, setPlacedSprites] = useState<PlacedSprite[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+  
+  const { 
+    placedSprites, 
+    totalSessions, 
+    canPlace, 
+    addPlacedSprite,
+    isLoading 
+  } = useProgression();
 
   const handleSelectSprite = (spriteId: string) => {
     setSelectedSpriteId(spriteId);
@@ -38,22 +45,9 @@ function App() {
 
   const handlePlaceSprite = (row: number, col: number) => {
     if (!selectedSpriteId) return;
+    if (!canPlace) return; // Enforce placement limit
 
-    const sprite = SPRITES.find((s) => s.id === selectedSpriteId);
-    if (!sprite) return;
-
-    setPlacedSprites((prev) => {
-      const filtered = prev.filter((s) => s.row !== row || s.col !== col);
-      return [
-        ...filtered,
-        {
-          spriteId: sprite.id,
-          sprite: sprite,
-          row,
-          col,
-        },
-      ];
-    });
+    addPlacedSprite(row, col, selectedSpriteId);
   };
 
   const selectedSprite = SPRITES.find((s) => s.id === selectedSpriteId) || null;
@@ -68,7 +62,7 @@ function App() {
           <div className="fixed top-6 left-1/2 transform -translate-x-1/2 flex items-center gap-2 z-50">
             <div className="bg-black border-2 border-white px-3 py-1 flex items-center gap-2" style={{ imageRendering: 'pixelated' }}>
               <CustomIcon src="/icons/Streak.png" alt="Streak" className="w-6 h-6" />
-              <span className="text-sm font-retro">1</span>
+              <span className="text-sm font-retro">{isLoading ? '...' : totalSessions}</span>
             </div>
             <div className="bg-black border-2 border-white px-3 py-1 flex items-center gap-2" style={{ imageRendering: 'pixelated' }}>
               <CustomIcon src="/icons/Time.png" alt="Time" className="w-6 h-6" />

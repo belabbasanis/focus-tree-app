@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw, Square } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { useProgression } from '../contexts/ProgressionContext';
 
-const PRESETS = [15, 25, 45]; // minutes
+const PRESETS = [5, 10, 15]; // seconds for testing
 
 // CustomIcon helper component for pixelated icons
 const CustomIcon = ({ 
@@ -23,10 +24,13 @@ const CustomIcon = ({
 );
 
 const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
-  const [timeRemaining, setTimeRemaining] = useState<number>(25 * 60);
+  const [timeRemaining, setTimeRemaining] = useState<number>(5); // 5 seconds for testing
   const [isRunning, setIsRunning] = useState<boolean>(false);
-  const [selectedDuration, setSelectedDuration] = useState<number>(25);
+  const [selectedDuration, setSelectedDuration] = useState<number>(5); // seconds for testing
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const sessionStartTimeRef = useRef<Date | null>(null);
+  const sessionStartedRef = useRef<boolean>(false);
+  const { addSession } = useProgression();
 
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
@@ -60,7 +64,31 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
     };
   }, [isRunning, timeRemaining]);
 
+  // Handle session completion - separate effect that watches for completion
+  useEffect(() => {
+    if (timeRemaining === 0 && sessionStartedRef.current && sessionStartTimeRef.current) {
+      console.log('[FT][TIMER] session finished, attempting to save');
+      
+      const startedAt = sessionStartTimeRef.current;
+      const endedAt = new Date();
+      
+      addSession({
+        startedAt: startedAt.toISOString(),
+        endedAt: endedAt.toISOString(),
+        duration: selectedDuration, // already in seconds for testing
+      });
+      
+      console.log('[FT][SAVE] addSession called');
+      
+      // Reset session tracking
+      sessionStartTimeRef.current = null;
+      sessionStartedRef.current = false;
+    }
+  }, [timeRemaining, selectedDuration, addSession]);
+
   const handleStart = () => {
+    sessionStartTimeRef.current = new Date();
+    sessionStartedRef.current = true;
     setIsRunning(true);
   };
 
@@ -70,18 +98,24 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
 
   const handleStop = () => {
     setIsRunning(false);
-    setTimeRemaining(selectedDuration * 60);
+    setTimeRemaining(selectedDuration); // already in seconds for testing
+    // Don't save incomplete sessions - reset start time
+    sessionStartTimeRef.current = null;
+    sessionStartedRef.current = false;
   };
 
   const handleReset = () => {
     setIsRunning(false);
-    setTimeRemaining(selectedDuration * 60);
+    setTimeRemaining(selectedDuration); // already in seconds for testing
+    // Don't save incomplete sessions - reset start time
+    sessionStartTimeRef.current = null;
+    sessionStartedRef.current = false;
   };
 
-  const handlePresetSelect = (minutes: number) => {
+  const handlePresetSelect = (seconds: number) => {
     if (!isRunning) {
-      setSelectedDuration(minutes);
-      setTimeRemaining(minutes * 60);
+      setSelectedDuration(seconds);
+      setTimeRemaining(seconds); // already in seconds for testing
     }
   };
 
@@ -122,7 +156,7 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
                   )}
                   style={{ imageRendering: 'pixelated' }}
                 >
-                  {preset} MIN
+                  {preset} SEC
                 </button>
               ))}
             </div>
