@@ -9,6 +9,7 @@ import { createStorageError } from './errors';
 const DB_NAME = 'focustree';
 const STORE_SESSIONS = 'sessions';
 const STORE_GRID = 'grid';
+const STORE_SETTINGS = 'settings';
 
 export class WebStorage implements IStorage {
   private db: IDBDatabase | null = null;
@@ -39,6 +40,10 @@ export class WebStorage implements IStorage {
         if (!db.objectStoreNames.contains(STORE_GRID)) {
           const gridStore = db.createObjectStore(STORE_GRID, { keyPath: 'id' });
           gridStore.createIndex('row_col', ['row', 'col'], { unique: true });
+        }
+        
+        if (!db.objectStoreNames.contains(STORE_SETTINGS)) {
+          db.createObjectStore(STORE_SETTINGS, { keyPath: 'key' });
         }
       };
     });
@@ -165,6 +170,53 @@ export class WebStorage implements IStorage {
         resolve({ 
           success: false, 
           error: createStorageError('STORAGE_ERROR', 'Failed to remove placed sprite') 
+        });
+      };
+    });
+  }
+
+  async getSetting(key: string): Promise<StorageResult<string | null>> {
+    if (!this.db) {
+      return { success: false, error: createStorageError('STORAGE_ERROR', 'Database not initialized') };
+    }
+
+    return new Promise((resolve) => {
+      const transaction = this.db!.transaction([STORE_SETTINGS], 'readonly');
+      const store = transaction.objectStore(STORE_SETTINGS);
+      const request = store.get(key);
+
+      request.onsuccess = () => {
+        const result = request.result;
+        resolve({ success: true, data: result ? result.value : null });
+      };
+
+      request.onerror = () => {
+        resolve({ 
+          success: false, 
+          error: createStorageError('STORAGE_ERROR', 'Failed to get setting') 
+        });
+      };
+    });
+  }
+
+  async setSetting(key: string, value: string): Promise<StorageResult<void>> {
+    if (!this.db) {
+      return { success: false, error: createStorageError('STORAGE_ERROR', 'Database not initialized') };
+    }
+
+    return new Promise((resolve) => {
+      const transaction = this.db!.transaction([STORE_SETTINGS], 'readwrite');
+      const store = transaction.objectStore(STORE_SETTINGS);
+      const request = store.put({ key, value });
+
+      request.onsuccess = () => {
+        resolve({ success: true, data: undefined });
+      };
+
+      request.onerror = () => {
+        resolve({ 
+          success: false, 
+          error: createStorageError('STORAGE_ERROR', 'Failed to set setting') 
         });
       };
     });
