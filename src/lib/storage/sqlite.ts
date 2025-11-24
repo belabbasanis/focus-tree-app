@@ -94,6 +94,14 @@ export class SQLiteStorage implements IStorage {
         UNIQUE(row, col)
       )
     `);
+
+    // Settings table (key-value store)
+    await this.db.execute(`
+      CREATE TABLE IF NOT EXISTS settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL
+      )
+    `);
   }
 
   async getAllSessions(): Promise<StorageResult<Session[]>> {
@@ -226,6 +234,44 @@ export class SQLiteStorage implements IStorage {
       return { 
         success: false, 
         error: createStorageError('STORAGE_ERROR', 'Failed to remove placed sprite', error) 
+      };
+    }
+  }
+
+  async getSetting(key: string): Promise<StorageResult<string | null>> {
+    try {
+      if (!this.db) {
+        return { success: false, error: createStorageError('STORAGE_ERROR', 'Database not initialized') };
+      }
+
+      const result = await this.db.query('SELECT value FROM settings WHERE key = ?', [key]);
+      if (result.values && result.values.length > 0) {
+        return { success: true, data: (result.values[0] as { value: string }).value };
+      }
+      return { success: true, data: null };
+    } catch (error) {
+      return { 
+        success: false, 
+        error: createStorageError('STORAGE_ERROR', 'Failed to get setting', error) 
+      };
+    }
+  }
+
+  async setSetting(key: string, value: string): Promise<StorageResult<void>> {
+    try {
+      if (!this.db) {
+        return { success: false, error: createStorageError('STORAGE_ERROR', 'Database not initialized') };
+      }
+
+      await this.db.run(
+        'INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)',
+        [key, value]
+      );
+      return { success: true, data: undefined };
+    } catch (error) {
+      return { 
+        success: false, 
+        error: createStorageError('STORAGE_ERROR', 'Failed to set setting', error) 
       };
     }
   }

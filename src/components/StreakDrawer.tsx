@@ -48,12 +48,24 @@ const StreakDrawer = ({
   }
 
   return (
-    <div className={cn(
-      DRAWER.container,
-      isOpen ? DRAWER.open : DRAWER.closed
-    )}
-    style={ICON.pixel}
-    >
+    <>
+      {/* Semi-transparent black overlay with blur */}
+      <div
+        className={cn(
+          DRAWER.overlay,
+          isOpen ? DRAWER.overlayOpen : DRAWER.overlayClosed
+        )}
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      
+      {/* Drawer */}
+      <div className={cn(
+        DRAWER.container,
+        isOpen ? DRAWER.open : DRAWER.closed
+      )}
+      style={ICON.pixel}
+      >
       <div className={DRAWER.header}>
         <div className={LAYOUT.centeredFlex} style={{ gap: '0.75rem' }}>
           <span className={`${TEXT.retro} ${TEXT.xs} ${COLOR.white} ${TEXT.uppercase}`}>
@@ -138,7 +150,8 @@ const StreakDrawer = ({
           </button>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

@@ -16,6 +16,11 @@ export interface GridPlacement {
   spriteId: string;
 }
 
+export interface Setting {
+  key: string;
+  value: string; // JSON stringified value
+}
+
 export interface StorageError {
   code: 'STORAGE_ERROR' | 'SCHEMA_ERROR' | 'CONSTRAINT_ERROR';
   message: string;

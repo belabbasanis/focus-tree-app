@@ -4,18 +4,46 @@ import { cn } from '../lib/utils';
 import { useProgression } from '../contexts/ProgressionContext';
 import { LAYOUT, ICON, TEXT, BTN, COLOR } from '../lib/ui';
 import CustomIcon from './CustomIcon';
+import TimerSettings from './TimerSettings';
+import { createStorage } from '../lib/storage';
 
-const PRESETS = [5, 10, 15]; // seconds for testing
+const DEFAULT_PRESETS = [15, 25, 45]; // minutes - production defaults
 
 const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
-  const [timeRemaining, setTimeRemaining] = useState<number>(5); // 5 seconds for testing
+  const [presets, setPresets] = useState<number[]>(DEFAULT_PRESETS); // minutes
+  const [timeRemaining, setTimeRemaining] = useState<number>(DEFAULT_PRESETS[0] * 60); // seconds
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
-  const [selectedDuration, setSelectedDuration] = useState<number>(5); // seconds for testing
+  const [selectedDuration, setSelectedDuration] = useState<number>(DEFAULT_PRESETS[0] * 60); // seconds
+  const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const sessionStartTimeRef = useRef<Date | null>(null);
   const sessionStartedRef = useRef<boolean>(false);
   const { addSession } = useProgression();
+
+  // Load settings on mount
+  useEffect(() => {
+    async function loadSettings() {
+      const storage = createStorage();
+      await storage.initialize();
+      const result = await storage.getSetting('timer_presets');
+      
+      if (result.success && result.data) {
+        try {
+          const savedPresets = JSON.parse(result.data) as number[];
+          if (Array.isArray(savedPresets) && savedPresets.length > 0) {
+            setPresets(savedPresets);
+            const firstPreset = savedPresets[0] * 60; // Convert minutes to seconds
+            setTimeRemaining(firstPreset);
+            setSelectedDuration(firstPreset);
+          }
+        } catch (e) {
+          console.error('[FT][TIMER] Failed to parse saved presets:', e);
+        }
+      }
+    }
+    loadSettings();
+  }, []);
 
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
@@ -108,11 +136,20 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
     sessionStartedRef.current = false;
   };
 
-  const handlePresetSelect = (seconds: number) => {
+  const handlePresetSelect = (minutes: number) => {
     if (!isRunning) {
+      const seconds = minutes * 60;
       setSelectedDuration(seconds);
-      setTimeRemaining(seconds); // already in seconds for testing
+      setTimeRemaining(seconds);
     }
+  };
+
+  const handlePresetsChange = (newPresets: number[]) => {
+    setPresets(newPresets);
+    // Update selected duration to first preset
+    const firstPreset = newPresets[0] * 60; // Convert minutes to seconds
+    setSelectedDuration(firstPreset);
+    setTimeRemaining(firstPreset);
   };
 
   return (
@@ -156,20 +193,23 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
           {/* Preset Buttons - Retro style */}
           {!isRunning && !isCompleted && (
             <div className={LAYOUT.presetContainer}>
-              {PRESETS.map((preset) => (
-                <button
-                  key={preset}
-                  onClick={() => handlePresetSelect(preset)}
-                  className={cn(
-                    selectedDuration === preset
-                      ? BTN.presetSelected
-                      : BTN.preset
-                  )}
-                  style={ICON.pixel}
-                >
-                  {preset} SEC
-                </button>
-              ))}
+              {presets.map((presetMinutes) => {
+                const presetSeconds = presetMinutes * 60;
+                return (
+                  <button
+                    key={presetMinutes}
+                    onClick={() => handlePresetSelect(presetMinutes)}
+                    className={cn(
+                      selectedDuration === presetSeconds
+                        ? BTN.presetSelected
+                        : BTN.preset
+                    )}
+                    style={ICON.pixel}
+                  >
+                    {presetMinutes} MIN
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>
@@ -223,6 +263,7 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
               <Play className={`${ICON.nav} text-black`} fill="currentColor" />
             </button>
             <button
+              onClick={() => setIsSettingsOpen(true)}
               className={BTN.nav}
               style={ICON.pixel}
               aria-label="Settings"
@@ -232,6 +273,13 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
           </>
         )}
       </div>
+
+      <TimerSettings
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        onPresetsChange={handlePresetsChange}
+        currentPresets={presets}
+      />
     </div>
   );
 };

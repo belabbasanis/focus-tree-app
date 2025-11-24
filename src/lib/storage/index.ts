@@ -17,6 +17,10 @@ export interface IStorage {
   addPlacedSprite(placement: Omit<GridPlacement, 'id'> & { id?: string }): Promise<StorageResult<GridPlacement>>;
   removePlacedSprite(id: string): Promise<StorageResult<void>>;
   
+  // Settings (key-value store)
+  getSetting(key: string): Promise<StorageResult<string | null>>;
+  setSetting(key: string, value: string): Promise<StorageResult<void>>;
+  
   // Lifecycle
   initialize(): Promise<StorageResult<void>>;
   close(): Promise<void>;
@@ -34,5 +38,5 @@ export function createStorage(): IStorage {
 }
 
 // Re-export types for convenience
-export type { Session, GridPlacement, StorageResult, StorageError } from './types';
+export type { Session, GridPlacement, StorageResult, StorageError, Setting } from './types';
 
