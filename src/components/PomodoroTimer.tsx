@@ -12,6 +12,7 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [selectedDuration, setSelectedDuration] = useState<number>(5); // seconds for testing
+  const [showRipple, setShowRipple] = useState<boolean>(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const sessionStartTimeRef = useRef<Date | null>(null);
   const sessionStartedRef = useRef<boolean>(false);
@@ -86,6 +87,9 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
     sessionStartTimeRef.current = new Date();
     sessionStartedRef.current = true;
     setIsRunning(true);
+    setShowRipple(true);
+    // Reset ripple after animation completes
+    setTimeout(() => setShowRipple(false), 1500);
   };
 
   const handlePause = () => {
@@ -117,10 +121,24 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
 
   return (
     <div className={`${LAYOUT.timerContainer}`} style={ICON.pixel}>
-      {/* Animated GIF Background - only when timer is running */}
-      {isRunning && (
+      {/* Static first frame - always visible when not running */}
+      {!isRunning && (
         <div 
           className={`${LAYOUT.absoluteFull}`}
+          style={{
+            backgroundImage: 'url(/videos/loop-calm-farm-frame1.png)', // Static first frame - user needs to provide this
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            ...ICON.pixel,
+          }}
+        />
+      )}
+      
+      {/* Animated GIF Background - appears with ripple when timer starts */}
+      {isRunning && (
+        <div 
+          className={`${LAYOUT.absoluteFull} ${showRipple ? 'ripple-reveal' : ''}`}
           style={{
             backgroundImage: 'url(/videos/loop-calm-farm.gif)',
             backgroundSize: 'cover',

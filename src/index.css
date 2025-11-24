@@ -110,3 +110,22 @@
     text-shadow: 2px 2px 0px #000000;
   }
 }
+
+/* Ripple reveal animation for timer background */
+@keyframes rippleReveal {
+  0% {
+    clip-path: circle(0% at 50% 50%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    clip-path: circle(150% at 50% 50%);
+    opacity: 1;
+  }
+}
+
+.ripple-reveal {
+  animation: rippleReveal 1.5s ease-out forwards;
+}
