@@ -69,7 +69,7 @@ const StreakDrawer = ({
       <div className={DRAWER.header}>
         <div className={LAYOUT.centeredFlex} style={{ gap: '0.75rem' }}>
           <span className={`${TEXT.retro} ${TEXT.xs} ${COLOR.white} ${TEXT.uppercase}`}>
-            STREAK: {currentStreak} DAYS
+            STREAK
           </span>
         </div>
         <button
@@ -82,68 +82,86 @@ const StreakDrawer = ({
         </button>
       </div>
 
-      <div className={DRAWER.content}>
-        {/* Current Streak Display */}
-        <div className={LAYOUT.centeredColumn} style={{ marginBottom: '2rem' }}>
-          <div className={`${COLOR.white} ${TEXT.lg} ${TEXT.retro} ${TEXT.uppercase}`}>
-            {currentStreak} DAY STREAK
+      <div className={DRAWER.content} style={{ paddingBottom: '2rem' }}>
+        {/* Large Flame Icon at Top - Centered */}
+        <div className={LAYOUT.centeredFlex} style={{ marginBottom: '1rem' }}>
+          <CustomIcon 
+            src="/icons/flame_104.png" 
+            alt="Streak flame" 
+            className="w-24 h-24 md:w-32 md:h-32"
+          />
+        </div>
+        
+        {/* Streak Number - Centered */}
+        <div className={LAYOUT.centeredColumn} style={{ marginBottom: '1.5rem' }}>
+          <div className={`${COLOR.white} ${TEXT.retro}`} style={{ fontSize: '3rem', lineHeight: '1.2' }}>
+            {currentStreak}
           </div>
-          <div className={`${COLOR.white} ${TEXT.sm} ${TEXT.retro}`} style={{ opacity: 0.7 }}>
-            Keep it going!
+          <div className={`${COLOR.white} ${TEXT.sm} ${TEXT.retro} ${TEXT.uppercase}`} style={{ opacity: 0.9 }}>
+            {currentStreak === 1 ? 'day streak' : 'day streak'}
           </div>
         </div>
 
         {/* Week View - Last 7 Days */}
         <div style={{ marginBottom: '2rem' }}>
-          <div className={`${COLOR.white} ${TEXT.xs} ${TEXT.retro} ${TEXT.uppercase}`} style={{ marginBottom: '1rem' }}>
-            THIS WEEK
-          </div>
           <div className="flex gap-2">
             {days.map((day) => {
-              const dayNumber = day.date.getDate();
-              
               return (
                 <div
                   key={day.dateStr}
-                  className={cn(
-                    "flex-1 flex flex-col items-center justify-center border-2 transition-none py-3",
-                    day.hasSession
-                      ? "bg-white border-white"
-                      : "bg-black border-white",
-                    day.isToday && "ring-2 ring-white ring-offset-2 ring-offset-black"
-                  )}
-                  style={ICON.pixel}
-                  title={day.dateStr}
+                  className="flex-1 flex flex-col items-center"
                 >
+                  {/* Day Name - Outside Container */}
                   <span
                     className={cn(
                       TEXT.xs,
                       TEXT.retro,
-                      day.hasSession ? COLOR.black : COLOR.white,
-                      "opacity-70 mb-1"
+                      COLOR.white,
+                      "mb-2 opacity-70"
                     )}
+                    style={ICON.pixel}
                   >
-                    {day.dayName}
+                    {day.dayName.slice(0, 2)}
                   </span>
-                  <CustomIcon
-                    src={day.hasSession ? "/icons/hot-streak_32.png" : "/icons/cold-streak_32.png"}
-                    alt={day.hasSession ? "Streak day" : "Missed day"}
-                    className={ICON.stats}
-                  />
+                  
+                  {/* Icon Container */}
+                  <div
+                    className={cn(
+                      "w-full aspect-square flex items-center justify-center border-2 transition-none",
+                      "min-w-[24px] min-h-[24px]",
+                      day.isToday && "ring-2 ring-white ring-offset-2 ring-offset-black"
+                    )}
+                    style={{
+                      ...ICON.pixel,
+                      borderColor: day.hasSession 
+                        ? 'rgba(255, 0, 0, 0.2)' // #FF0000 opacity-20 for hot streak
+                        : 'rgba(0, 98, 154, 0.6)', // #00629A opacity-60 for cold streak
+                    }}
+                    title={day.dateStr}
+                  >
+                    <CustomIcon
+                      src={day.hasSession ? "/icons/Streak.png" : "/icons/cold-streak_32.png"}
+                      alt={day.hasSession ? "Streak day" : "Missed day"}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
                 </div>
               );
             })}
           </div>
         </div>
 
-        {/* CTA Button */}
-        <div className={LAYOUT.centeredFlex}>
+        {/* CTA Button - Full Width, Bigger for Mobile */}
+        <div className="w-full" style={{ paddingBottom: 'env(safe-area-inset-bottom, 1rem)' }}>
           <button
             onClick={() => {
               onStartSession();
               onClose();
             }}
-            className={BTN.presetSelected}
+            className={cn(
+              BTN.preset,
+              "w-full py-4 text-lg md:text-base"
+            )}
             style={ICON.pixel}
           >
             START FOCUS SESSION
