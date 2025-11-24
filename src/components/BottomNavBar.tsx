@@ -23,7 +23,7 @@ const BottomNavBar = ({
         style={ICON.pixel}
         aria-label="Timer"
       >
-        <CustomIcon src="/icons/Time.png" alt="Timer" className={ICON.nav} />
+        <CustomIcon src="/icons/hourglass_32.png" alt="Timer" className={ICON.nav} />
       </button>
       <button
         onClick={onOpenSpriteSelector}

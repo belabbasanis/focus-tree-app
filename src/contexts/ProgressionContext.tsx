@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, useRef, ReactNode } fro
 import { createStorage, type Session, type GridPlacement, type IStorage } from '../lib/storage';
 import { SPRITES } from '../config/sprites';
 import type { PlacedSprite } from '../types/sprite';
+import { calculateStreak } from '../lib/streak';
 
 interface ProgressionState {
   sessions: Session[];
@@ -10,6 +11,7 @@ interface ProgressionState {
   allowedSprites: number;
   usedSprites: number;
   canPlace: boolean;
+  currentStreak: number;
   isLoading: boolean;
   error: string | null;
 }
@@ -30,6 +32,7 @@ export function ProgressionProvider({ children }: { children: ReactNode }) {
     allowedSprites: 1,
     usedSprites: 0,
     canPlace: true,
+    currentStreak: 0,
     isLoading: true,
     error: null,
   });
@@ -96,6 +99,7 @@ export function ProgressionProvider({ children }: { children: ReactNode }) {
       const allowedSprites = 1 + totalSessions;
       const usedSprites = placedSprites.length;
       const canPlace = usedSprites < allowedSprites;
+      const streak = calculateStreak(sessions);
 
       setState({
         sessions,
@@ -104,6 +108,7 @@ export function ProgressionProvider({ children }: { children: ReactNode }) {
         allowedSprites,
         usedSprites,
         canPlace,
+        currentStreak: streak,
         isLoading: false,
         error: null,
       });
@@ -129,11 +134,13 @@ export function ProgressionProvider({ children }: { children: ReactNode }) {
       const newSessions = [result.data, ...prev.sessions];
       const totalSessions = newSessions.length;
       const allowedSprites = 1 + totalSessions;
+      const streak = calculateStreak(newSessions);
       return {
         ...prev,
         sessions: newSessions,
         totalSessions,
         allowedSprites,
+        currentStreak: streak,
         canPlace: prev.usedSprites < allowedSprites,
       };
     });
