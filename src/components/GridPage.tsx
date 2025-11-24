@@ -26,8 +26,9 @@ const GridPage = ({
   onCloseDrawer,
   onNavigateToTimer,
 }: GridPageProps) => {
-  const { placedSprites, totalSessions, canPlace, isLoading } = useProgression();
+  const { placedSprites, totalSessions, canPlace, isLoading, allowedSprites, usedSprites } = useProgression();
   const selectedSprite = SPRITES.find((s) => s.id === selectedSpriteId) || null;
+  const availableSprites = allowedSprites - usedSprites;
 
   return (
     <>
@@ -50,6 +51,7 @@ const GridPage = ({
         isOpen={isDrawerOpen}
         onClose={onCloseDrawer}
         canPlace={canPlace}
+        availableSprites={availableSprites}
       />
 
       <BottomNavBar

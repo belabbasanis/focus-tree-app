@@ -10,6 +10,7 @@ interface MobileSpriteSelectorProps {
   isOpen: boolean;
   onClose: () => void;
   canPlace: boolean;
+  availableSprites: number;
 }
 
 // Preview card component with consistent sizing aligned with grid constraints
@@ -87,6 +88,7 @@ const MobileSpriteSelector = ({
   isOpen,
   onClose,
   canPlace,
+  availableSprites,
 }: MobileSpriteSelectorProps) => {
   const selectedSprite = selectedSpriteId 
     ? sprites.find(s => s.id === selectedSpriteId)
@@ -109,7 +111,9 @@ const MobileSpriteSelector = ({
               </span>
             </>
           ) : (
-            <span className={`${TEXT.retro} ${TEXT.xs} ${COLOR.white} ${TEXT.uppercase}`}>SELECT SPRITE</span>
+            <span className={`${TEXT.retro} ${TEXT.xs} ${COLOR.white} ${TEXT.uppercase}`}>
+              SELECT SPRITE ({availableSprites})
+            </span>
           )}
         </div>
         <button
