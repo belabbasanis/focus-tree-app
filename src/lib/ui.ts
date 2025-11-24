@@ -37,6 +37,7 @@ export const ICON = {
   nav: "w-5 h-5",         // Navigation icons
   stats: "w-6 h-6",       // Top stats bar icons
   indicator: "w-2 h-2",   // Selection indicator dot
+  lock: "w-8 h-8",        // Lock icon size
   pixel: { imageRendering: "pixelated" as const },
   lucideWhite: { filter: 'brightness(0) invert(1)' as const }, // For lucide-react icons
   playOffset: "ml-1",     // Visual adjustment for play triangle
@@ -71,7 +72,12 @@ export const BTN = {
 export const CARD = {
   sprite: "relative aspect-square border-2 transition-none overflow-hidden bg-black border-white hover:bg-white",
   spriteSelected: "relative aspect-square border-2 transition-none overflow-hidden bg-white border-white",
+  spriteLocked: "opacity-50 cursor-not-allowed",
   headerPreview: "w-10 h-10 bg-black border-2 border-white flex items-center justify-center overflow-hidden",
+  previewFrame: "absolute inset-0 overflow-hidden flex items-center justify-center",
+  selectionIndicator: "absolute inset-0 flex items-center justify-center bg-black/50 pointer-events-none border-2 border-white",
+  lockOverlay: "absolute inset-0 flex items-center justify-center bg-black/70 pointer-events-none",
+  lockIcon: "w-8 h-8",
 };
 
 // ============================================================================
@@ -79,13 +85,15 @@ export const CARD = {
 // ============================================================================
 
 export const DRAWER = {
-  container: "fixed bottom-0 left-0 right-0 z-[60] bg-black border-t-2 border-white shadow-none transition-transform duration-300 ease-in-out flex flex-col",
+  container: "fixed bottom-0 left-0 right-0 z-[10000] bg-black border-t-2 border-white shadow-none transition-transform duration-300 ease-in-out flex flex-col",
   open: "translate-y-0",
   closed: "translate-y-full",
   borderTop: "border-t-2 border-white",
   borderBottom: "border-b-2 border-white",
   headerPadding: "px-4 py-3",
+  header: "flex items-center justify-between px-4 py-3 border-b-2 border-white flex-shrink-0",
   content: "flex-1 overflow-y-auto overscroll-contain px-4 pb-4 pt-4",
+  contentGrid: "grid grid-cols-4 gap-2",
 };
 
 // ============================================================================
@@ -127,7 +135,7 @@ export const LAYOUT = {
   
   // Navigation containers
   navContainer: "fixed bottom-6 left-1/2 transform -translate-x-1/2 flex items-center gap-4",
-  statsContainer: "fixed top-6 left-1/2 transform -translate-x-1/2 flex items-center gap-2",
+  statsContainer: "fixed top-14 left-1/2 transform -translate-x-1/2 flex items-center gap-2",
   statsItem: "bg-black border-2 border-white px-3 py-1 flex items-center gap-2",
   
   // Content containers

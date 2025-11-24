@@ -27,9 +27,9 @@ const baseLayerSprites: Sprite[] = BASE_LAYER_IDS.map(id => ({
 
 // Secondary layer sprites (objects/decorations)
 const SECONDARY_LAYER_IDS = [
-  'tile_02', 'tile_03', 'tile_04', 'tile_05', 'tile_06', 'tile_07', 'tile_08', 'tile_09', 'tile_10',
+  'tile_00', 'tile_02', 'tile_03', 'tile_04', 'tile_05', 'tile_06', 'tile_07', 'tile_08', 'tile_09', 'tile_10',
   'tile_11', 'tile_12', 'tile_13', 'tile_14', 'tile_15', 'tile_16', 'tile_17', 'tile_18', 'tile_19', 'tile_20',
-  'tile_21', 'tile_22', 'tile_23', 'tile_24', 'tile_25', 'tile_26', 'tile_27', 'tile_28', 'tile_29', 'tile_30', 'tile_grass',
+  'tile_21', 'tile_22', 'tile_23', 'tile_24', 'tile_25', 'tile_26', 'tile_27', 'tile_28', 'tile_29', 'tile_30',
 ];
 
 const secondaryLayerSprites: Sprite[] = SECONDARY_LAYER_IDS.map(id => ({

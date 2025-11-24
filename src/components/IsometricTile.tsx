@@ -1,3 +1,5 @@
+import { TILE, ICON, EFFECT } from '../lib/ui';
+
 interface IsometricTileProps {
   x: number;
   y: number;
@@ -28,7 +30,7 @@ const IsometricTile = ({
 
   return (
     <div
-      className="absolute cursor-pointer transition-all duration-200"
+      className={TILE.base}
       style={{
         left: `${x}px`,
         top: `${y}px`,
@@ -41,9 +43,7 @@ const IsometricTile = ({
       onClick={handleClick}
     >
       <div
-        className={`relative transition-none ${
-          isSelected ? 'scale-105' : ''
-        }`}
+        className={`${TILE.inner} ${isSelected ? TILE.selected : ''}`}
         style={{
           width: '100%',
           height: '100%',
@@ -53,7 +53,7 @@ const IsometricTile = ({
           width={width}
           height={height}
           viewBox={`0 0 ${width} ${height}`}
-          style={{ display: 'block', imageRendering: 'pixelated' }}
+          style={{ display: 'block', ...ICON.pixel }}
         >
           <polygon
             points={`${width / 2},0 ${width},${height / 2} ${width / 2},${height} 0,${height / 2}`}
@@ -65,8 +65,8 @@ const IsometricTile = ({
           />
         </svg>
         <div
-          className="absolute inset-0 flex items-center justify-center text-xs font-retro text-white opacity-30"
-          style={{ pointerEvents: 'none', imageRendering: 'pixelated' }}
+          className={`${TILE.label} ${EFFECT.noPointerEvents}`}
+          style={ICON.pixel}
         >
           {row},{col}
         </div>

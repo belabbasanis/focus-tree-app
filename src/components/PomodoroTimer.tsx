@@ -2,26 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw, Square } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useProgression } from '../contexts/ProgressionContext';
+import { LAYOUT, ICON, TEXT, BTN, COLOR } from '../lib/ui';
+import CustomIcon from './CustomIcon';
 
 const PRESETS = [5, 10, 15]; // seconds for testing
-
-// CustomIcon helper component for pixelated icons
-const CustomIcon = ({ 
-  src, 
-  alt, 
-  className = "w-5 h-5" 
-}: { 
-  src: string; 
-  alt: string; 
-  className?: string;
-}) => (
-  <img 
-    src={src} 
-    alt={alt} 
-    className={className}
-    style={{ imageRendering: 'pixelated' }}
-  />
-);
 
 const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
   const [timeRemaining, setTimeRemaining] = useState<number>(5); // 5 seconds for testing
@@ -120,41 +104,39 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
   };
 
   return (
-    <div className="h-screen w-screen flex flex-col fixed inset-0 relative overflow-hidden bg-black" style={{ imageRendering: 'pixelated' }}>
+    <div className={`${LAYOUT.timerContainer}`} style={ICON.pixel}>
       {/* Retro CRT Background - Simple black with scanlines */}
-      <div className="absolute inset-0 bg-black" />
+      <div className={`${LAYOUT.absoluteFull} ${COLOR.bgDark}`} />
 
       {/* Content */}
-      <div className="relative z-10 flex-1 flex flex-col items-center px-4" style={{ paddingTop: '140px' }}>
-        <div className="flex flex-col items-center space-y-4">
+      <div className={LAYOUT.contentContainer} style={{ paddingTop: '140px' }}>
+        <div className={LAYOUT.centeredColumn}>
           {/* Timer - Retro pixel font */}
-          <div className="text-white text-8xl md:text-9xl font-retro" style={{
-            textShadow: '4px 4px 0px #000000',
-            letterSpacing: '0.1em',
-            imageRendering: 'pixelated',
+          <div className={`${COLOR.white} ${TEXT.timer}`} style={{
+            ...TEXT.timerShadow,
+            ...ICON.pixel,
           }}>
             {formatTime(timeRemaining)}
           </div>
           
           {/* Focus Session Label */}
-          <div className="text-white text-lg md:text-xl font-retro uppercase">
+          <div className={`${COLOR.white} ${TEXT.lg} ${TEXT.retro} ${TEXT.uppercase}`}>
             FOCUS SESSION
           </div>
 
           {/* Preset Buttons - Retro style */}
           {!isRunning && (
-            <div className="flex gap-3 mt-6">
+            <div className={LAYOUT.presetContainer}>
               {PRESETS.map((preset) => (
                 <button
                   key={preset}
                   onClick={() => handlePresetSelect(preset)}
                   className={cn(
-                    'px-4 py-2 border-2 border-white font-retro text-xs uppercase transition-none',
                     selectedDuration === preset
-                      ? 'bg-white text-black'
-                      : 'bg-black text-white hover:bg-white hover:text-black'
+                      ? BTN.presetSelected
+                      : BTN.preset
                   )}
-                  style={{ imageRendering: 'pixelated' }}
+                  style={ICON.pixel}
                 >
                   {preset} SEC
                 </button>
@@ -165,58 +147,58 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
       </div>
 
       {/* Bottom Navigation Bar - Retro Style */}
-      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 flex items-center gap-4 z-40">
+      <div className={`${LAYOUT.navContainer} ${LAYOUT.zNav}`}>
         {isRunning ? (
           <>
             <button
               onClick={handleReset}
-              className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"
-              style={{ imageRendering: 'pixelated' }}
+              className={BTN.nav}
+              style={ICON.pixel}
               aria-label="Reset"
             >
-              <RotateCcw className="w-5 h-5 text-white" style={{ filter: 'brightness(0) invert(1)' }} />
+              <RotateCcw className={`${ICON.nav} text-white`} style={ICON.lucideWhite} />
             </button>
             <button
               onClick={handlePause}
-              className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"
-              style={{ imageRendering: 'pixelated' }}
+              className={BTN.nav}
+              style={ICON.pixel}
               aria-label="Pause"
             >
-              <Pause className="w-5 h-5 text-white" fill="currentColor" style={{ filter: 'brightness(0) invert(1)' }} />
+              <Pause className={`${ICON.nav} text-white`} fill="currentColor" style={ICON.lucideWhite} />
             </button>
             <button
               onClick={handleStop}
-              className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"
-              style={{ imageRendering: 'pixelated' }}
+              className={BTN.nav}
+              style={ICON.pixel}
               aria-label="Stop"
             >
-              <Square className="w-5 h-5 text-white" fill="currentColor" style={{ filter: 'brightness(0) invert(1)' }} />
+              <Square className={`${ICON.nav} text-white`} fill="currentColor" style={ICON.lucideWhite} />
             </button>
           </>
         ) : (
           <>
             <button
               onClick={onNavigateHome}
-              className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"
-              style={{ imageRendering: 'pixelated' }}
+              className={BTN.nav}
+              style={ICON.pixel}
               aria-label="Garden"
             >
-              <CustomIcon src="/icons/Palm.png" alt="Garden" className="w-5 h-5" />
+              <CustomIcon src="/icons/Palm.png" alt="Garden" className={ICON.nav} />
             </button>
             <button
               onClick={handleStart}
-              className="bg-white border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"
-              style={{ imageRendering: 'pixelated' }}
+              className={BTN.play}
+              style={ICON.pixel}
               aria-label="Start"
             >
-              <Play className="w-5 h-5 text-black" fill="currentColor" />
+              <Play className={`${ICON.nav} text-black`} fill="currentColor" />
             </button>
             <button
-              className="bg-black border-2 border-white w-12 h-12 flex items-center justify-center hover:bg-[rgba(255,140,0,0.2)] transition-none"
-              style={{ imageRendering: 'pixelated' }}
+              className={BTN.nav}
+              style={ICON.pixel}
               aria-label="Settings"
             >
-              <CustomIcon src="/icons/Settings.png" alt="Settings" className="w-5 h-5" />
+              <CustomIcon src="/icons/Settings.png" alt="Settings" className={ICON.nav} />
             </button>
           </>
         )}
