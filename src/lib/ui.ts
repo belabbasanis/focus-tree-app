@@ -21,7 +21,7 @@ export const COLOR = {
   bgWhite: "bg-white",
   border: "border-white",
   border2: "border-2 border-white",
-  hoverOrange: "hover:bg-[rgba(255,140,0,0.2)]",
+  hoverWhite10: "hover:bg-[rgba(255,255,255,0.1)]",
   hoverWhite: "hover:bg-white",
   hoverTextBlack: "hover:text-black",
   overlay: "bg-black/50", // Selection indicator overlay
@@ -34,7 +34,7 @@ export const COLOR = {
 export const ICON = {
   tiny: "w-3 h-3",        // Default CustomIcon
   small: "w-4 h-4",       // Close button, small icons
-  nav: "w-5 h-5",         // Navigation icons
+  nav: "w-6 h-6",         // Navigation icons (24px)
   stats: "w-6 h-6",       // Top stats bar icons
   indicator: "w-2 h-2",   // Selection indicator dot
   lock: "w-8 h-8",        // Lock icon size
@@ -54,12 +54,12 @@ export const BTN = {
   border: "border-2 border-white",
   bgDark: "bg-black",
   bgWhite: "bg-white",
-  hover: "hover:bg-[rgba(255,140,0,0.2)]",
+  hover: "hover:bg-[rgba(255,255,255,0.1)]",
   active: "active:bg-white/20",
   
   // Composed variants
-  nav: "bg-black border-2 border-white w-12 h-12 flex items-center justify-center transition-none hover:bg-[rgba(255,140,0,0.2)]",
-  play: "bg-white border-2 border-white w-12 h-12 flex items-center justify-center transition-none hover:bg-[rgba(255,140,0,0.2)]",
+  nav: "bg-black border-2 border-white w-12 h-12 flex items-center justify-center transition-none hover:bg-[rgba(255,255,255,0.1)]",
+  play: "bg-white border-2 border-white w-12 h-12 flex items-center justify-center transition-none hover:bg-[rgba(255,255,255,0.1)]",
   preset: "px-4 py-2 border-2 border-white font-retro text-xs uppercase transition-none bg-black text-white hover:bg-white hover:text-black",
   presetSelected: "px-4 py-2 border-2 border-white font-retro text-xs uppercase transition-none bg-white text-black",
   close: "p-2 border-2 border-white bg-black hover:bg-white hover:text-black transition-none",
@@ -136,7 +136,7 @@ export const LAYOUT = {
   // Navigation containers
   navContainer: "fixed bottom-6 left-1/2 transform -translate-x-1/2 flex items-center gap-4",
   statsContainer: "fixed top-14 left-1/2 transform -translate-x-1/2 flex items-center gap-2",
-  statsItem: "bg-black border-2 border-white px-3 py-1 flex items-center gap-2",
+  statsItem: "bg-black border-2 border-white px-3 py-1 flex items-center justify-center gap-2",
   
   // Content containers
   timerContainer: "h-screen w-screen flex flex-col fixed inset-0 relative overflow-hidden bg-black",

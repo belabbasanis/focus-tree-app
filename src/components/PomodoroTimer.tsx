@@ -10,6 +10,7 @@ const PRESETS = [5, 10, 15]; // seconds for testing
 const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
   const [timeRemaining, setTimeRemaining] = useState<number>(5); // 5 seconds for testing
   const [isRunning, setIsRunning] = useState<boolean>(false);
+  const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [selectedDuration, setSelectedDuration] = useState<number>(5); // seconds for testing
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const sessionStartTimeRef = useRef<Date | null>(null);
@@ -64,13 +65,24 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
       
       console.log('[FT][SAVE] addSession called');
       
+      // Set completion state
+      setIsCompleted(true);
+      setIsRunning(false);
+      
       // Reset session tracking
       sessionStartTimeRef.current = null;
       sessionStartedRef.current = false;
+      
+      // Auto-reset after 2 seconds to allow starting new session
+      setTimeout(() => {
+        setIsCompleted(false);
+        setTimeRemaining(selectedDuration); // Reset to selected duration
+      }, 2000);
     }
   }, [timeRemaining, selectedDuration, addSession]);
 
   const handleStart = () => {
+    setIsCompleted(false); // Reset completion state
     sessionStartTimeRef.current = new Date();
     sessionStartedRef.current = true;
     setIsRunning(true);
@@ -105,8 +117,25 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
 
   return (
     <div className={`${LAYOUT.timerContainer}`} style={ICON.pixel}>
-      {/* Retro CRT Background - Simple black with scanlines */}
-      <div className={`${LAYOUT.absoluteFull} ${COLOR.bgDark}`} />
+      {/* Animated GIF Background - only when timer is running */}
+      {isRunning && (
+        <div 
+          className={`${LAYOUT.absoluteFull}`}
+          style={{
+            backgroundImage: 'url(/videos/loop-calm-farm.gif)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            ...ICON.pixel,
+          }}
+        />
+      )}
+      
+      {/* Dark overlay - lighter when animated for contrast */}
+      <div 
+        className={`${LAYOUT.absoluteFull} ${COLOR.bgDark}`} 
+        style={{ opacity: isRunning ? 0.3 : 1 }}
+      />
 
       {/* Content */}
       <div className={LAYOUT.contentContainer} style={{ paddingTop: '140px' }}>
@@ -119,13 +148,13 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
             {formatTime(timeRemaining)}
           </div>
           
-          {/* Focus Session Label */}
+          {/* Dynamic Session Label */}
           <div className={`${COLOR.white} ${TEXT.lg} ${TEXT.retro} ${TEXT.uppercase}`}>
-            FOCUS SESSION
+            {isCompleted ? 'SESSION COMPLETE' : isRunning ? 'FOCUSING' : 'FOCUS SESSION'}
           </div>
 
           {/* Preset Buttons - Retro style */}
-          {!isRunning && (
+          {!isRunning && !isCompleted && (
             <div className={LAYOUT.presetContainer}>
               {PRESETS.map((preset) => (
                 <button
@@ -183,7 +212,7 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
               style={ICON.pixel}
               aria-label="Garden"
             >
-              <CustomIcon src="/icons/Palm.png" alt="Garden" className={ICON.nav} />
+              <CustomIcon src="/icons/garden_32.png" alt="Garden" className={ICON.nav} />
             </button>
             <button
               onClick={handleStart}
