@@ -9,6 +9,12 @@ import { createStorage } from '../lib/storage';
 
 const DEFAULT_PRESETS = [15, 25, 45]; // minutes - production defaults
 
+const AVAILABLE_VIDEOS = [
+  '/videos/loop-calm-farm.gif',
+  '/videos/loop-calm-sea.gif',
+  '/videos/loop-calm-windmill.gif',
+];
+
 const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
   const [presets, setPresets] = useState<number[]>(DEFAULT_PRESETS); // minutes
   const [timeRemaining, setTimeRemaining] = useState<number>(DEFAULT_PRESETS[0] * 60); // seconds
@@ -17,6 +23,7 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
   const [selectedDuration, setSelectedDuration] = useState<number>(DEFAULT_PRESETS[0] * 60); // seconds
   const [showRipple, setShowRipple] = useState<boolean>(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
+  const [selectedVideo, setSelectedVideo] = useState<string>(AVAILABLE_VIDEOS[0]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const sessionStartTimeRef = useRef<Date | null>(null);
   const sessionStartedRef = useRef<boolean>(false);
@@ -114,6 +121,11 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
     setIsCompleted(false); // Reset completion state
     sessionStartTimeRef.current = new Date();
     sessionStartedRef.current = true;
+    
+    // Randomly select a video for this session
+    const randomVideo = AVAILABLE_VIDEOS[Math.floor(Math.random() * AVAILABLE_VIDEOS.length)];
+    setSelectedVideo(randomVideo);
+    
     setIsRunning(true);
     setShowRipple(true);
     // Reset ripple after animation completes
@@ -177,7 +189,7 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
         <div 
           className={`${LAYOUT.absoluteFull} ${showRipple ? 'ripple-reveal' : ''}`}
           style={{
-            backgroundImage: 'url(/videos/loop-calm-farm.gif)',
+            backgroundImage: `url(${selectedVideo})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
