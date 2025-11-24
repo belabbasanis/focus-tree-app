@@ -90,7 +90,7 @@ function App() {
           </div>
 
           <MobileSpriteSelector
-            sprites={SPRITES}
+            sprites={SPRITES.filter(s => s.layer === 'secondary')}
             selectedSpriteId={selectedSpriteId}
             onSelectSprite={handleSelectSprite}
             isOpen={isDrawerOpen}

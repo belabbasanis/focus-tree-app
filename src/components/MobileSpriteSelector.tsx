@@ -108,7 +108,7 @@ const MobileSpriteSelector = ({
 
   return (
     <div className={cn(
-      "fixed bottom-0 left-0 right-0 z-[60] bg-black border-t-2 border-white shadow-none transition-transform duration-300 ease-in-out flex flex-col",
+      "fixed bottom-0 left-0 right-0 z-[10000] bg-black border-t-2 border-white shadow-none transition-transform duration-300 ease-in-out flex flex-col",
       isOpen ? "translate-y-0" : "translate-y-full"
     )}
     style={{ imageRendering: 'pixelated' }}
