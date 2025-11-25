@@ -170,15 +170,16 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
 
   return (
     <div className={`${LAYOUT.timerContainer}`} style={ICON.pixel}>
-      {/* Static first frame - always visible when not running */}
+      {/* Static background - always visible when not running */}
       {!isRunning && (
         <div 
           className={`${LAYOUT.absoluteFull}`}
           style={{
-            backgroundImage: 'url(/videos/loop-calm-farm-frame1.png)', // Static first frame - user needs to provide this
+            backgroundImage: 'url(/images/splash-timer.png)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
+            zIndex: 0,
             ...ICON.pixel,
           }}
         />
@@ -193,15 +194,19 @@ const PomodoroTimer = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
+            zIndex: 0,
             ...ICON.pixel,
           }}
         />
       )}
-      
-      {/* Dark overlay - lighter when animated for contrast */}
+
+      {/* Dark overlay - above background, below content */}
       <div 
-        className={`${LAYOUT.absoluteFull} ${COLOR.bgDark}`} 
-        style={{ opacity: isRunning ? 0.3 : 1 }}
+        className={LAYOUT.absoluteFull}
+        style={{ 
+          backgroundColor: isRunning ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.1)',
+          zIndex: 1,
+        }}
       />
 
       {/* Content */}

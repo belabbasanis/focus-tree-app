@@ -7,7 +7,7 @@ import { LAYOUT, ICON, TEXT, COLOR } from './lib/ui';
 type ViewMode = 'grid' | 'timer';
 
 function App() {
-  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [viewMode, setViewMode] = useState<ViewMode>('timer');
   const [selectedSpriteId, setSelectedSpriteId] = useState<string | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   
